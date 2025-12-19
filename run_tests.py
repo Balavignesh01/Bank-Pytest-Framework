@@ -17,7 +17,6 @@ def build_pytest_command(action: Optional[str]) -> list[str]:
         cmd.extend(["-m", marker])
     return cmd
 def run_pytest(action: str | None = None) -> dict:
-    """Run pytest, optionally filtered by action marker, and return result summary."""
     env = os.environ.copy()
     existing = env.get("PYTHONPATH", "")
     root_str = str(PROJECT_ROOT)

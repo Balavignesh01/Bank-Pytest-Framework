@@ -1,5 +1,4 @@
 from typing import Optional
-
 from bank.models.store import AccountStore
 
 class AccountUpdateError(Exception):

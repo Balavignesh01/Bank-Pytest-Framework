@@ -1,23 +1,22 @@
-"""
-Advanced pytest test suite for registration service.
-Concepts covered (with REAL usage, not just comments):
--------------------------------------------------------
-- Custom markers (@pytest.mark.register)
-- Test classes for logical grouping
-- Function-level and class-level markers
-- @pytest.mark.parametrize (single & multi-arg)
-- @pytest.mark.parametrize with ids
-- Fixtures (store fixture from conftest.py)
-- Built-in markers: skip, xfail
-- monkeypatch (patching internal helpers)
-- Context-manager exception assertions
-- Multiple assertions per test
-- Indirect behavior verification
-- Test ordering independence
-- Edge-case validation
-- Data normalization tests
-- Boolean flag coverage
-"""
+# Advanced pytest test suite for registration service.
+# Concepts covered (with REAL usage, not just comments):
+# -------------------------------------------------------
+# - Custom markers (@pytest.mark.register)
+# - Test classes for logical grouping
+# - Function-level and class-level markers
+# - @pytest.mark.parametrize (single & multi-arg)
+# - @pytest.mark.parametrize with ids
+# - Fixtures (store fixture from conftest.py)
+# - Built-in markers: skip, xfail
+# - monkeypatch (patching internal helpers)
+# - Context-manager exception assertions
+# - Multiple assertions per test
+# - Indirect behavior verification
+# - Test ordering independence
+# - Edge-case validation
+# - Data normalization tests
+# - Boolean flag coverage
+
 import pytest
 from bank.services.register_service import (
     create_account,
@@ -31,10 +30,6 @@ from bank.services.register_service import (
 class TestRegistrationBasic:
     """
     Basic, happy-path and input-validation behavior.
-    These tests verify:
-    - successful account creation
-    - required field validation
-    - default values
     """
     def test_create_account_success(self, store):
         """
@@ -52,12 +47,12 @@ class TestRegistrationBasic:
     @pytest.mark.parametrize(
         "username,password",
         [
-            ("", "pw"),          # empty username
-            ("   ", "pw"),       # whitespace username
-            ("user", ""),        # empty password
-            ("user", "   "),     # whitespace password
-            (None, "pw"),        # None username
-            ("user", None),      # None password
+            ("", "pw"),        
+            ("   ", "pw"),      
+            ("user", ""),     
+            ("user", "   "),     
+            (None, "pw"),       
+            ("user", None),   
         ],
         ids=[
             "empty-username",
@@ -96,9 +91,9 @@ class TestRegistrationAdvanced:
     @pytest.mark.parametrize(
         "uname1,uname2",
         [
-            ("bob", "bob"),        # exact duplicate
-            ("bob", " Bob "),      # whitespace + case difference
-            ("BOB", "bob"),        # uppercase vs lowercase
+            ("bob", "bob"),      
+            ("bob", " Bob "),      
+            ("BOB", "bob"),   
         ],
         ids=[
             "exact-duplicate",
@@ -119,16 +114,7 @@ class TestRegistrationAdvanced:
             create_account(uname2, "pw", store)
     @pytest.mark.skip(reason="External email service not available in test environment")
     def test_registration_triggers_welcome_email(self, store):
-        """
-        Concept:
-        - @pytest.mark.skip
-        - Placeholder for external integration test
-        NOTE:
-        This test documents expected behavior
-        without breaking CI pipelines.
-        """
         create_account("temp", "pw", store)
-        # Would assert email delivery via mocked SMTP / API
     @pytest.mark.xfail(
         reason="ID collision handling is delegated to AccountStore",
         strict=False,

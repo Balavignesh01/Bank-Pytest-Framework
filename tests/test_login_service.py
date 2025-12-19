@@ -1,19 +1,18 @@
-"""
-Advanced pytest test suite for login service.
-Concepts demonstrated:
-----------------------
-- Custom markers (@pytest.mark.login)
-- Fixtures returning domain objects
-- Fixture dependency injection
-- Function-level and module-level tests
-- @pytest.mark.parametrize (single & multi-arg)
-- Parametrize with ids
-- Truth-table testing
-- Negative-path validation
-- monkeypatch for simulating backend failures
-- Regression testing
-- Explicit state setup per test
-"""
+# Advanced pytest test suite for login service.
+# Concepts demonstrated:
+# ----------------------
+# - Custom markers (@pytest.mark.login)
+# - Fixtures returning domain objects
+# - Fixture dependency injection
+# - Function-level and module-level tests
+# - @pytest.mark.parametrize (single & multi-arg)
+# - Parametrize with ids
+# - Truth-table testing
+# - Negative-path validation
+# - monkeypatch for simulating backend failures
+# - Regression testing
+# - Explicit state setup per test
+
 import pytest
 from bank.services.register_service import create_account
 from bank.services.login_service import login
@@ -23,7 +22,6 @@ from bank.services.login_service import login
 @pytest.fixture
 def registered_user(store):
     """
-    Fixture that creates and returns a registered user.
     Concepts:
     - Fixture returning a domain object
     - Shared setup logic
@@ -67,11 +65,11 @@ def test_login_is_case_insensitive_for_username(store):
 @pytest.mark.parametrize(
     "username,password,expected_ok",
     [
-        ("login_user", "password123", True),     # correct
-        ("login_user", "wrong", False),          # bad password
-        ("no_such_user", "password123", False),  # unknown user
-        ("LOGIN_USER", "password123", True),     # case-insensitive username
-        (" login_user ", "password123", True),   # whitespace username
+        ("login_user", "password123", True),    
+        ("login_user", "wrong", False),          
+        ("no_such_user", "password123", False),  
+        ("LOGIN_USER", "password123", True),     
+        (" login_user ", "password123", True),   
     ],
     ids=[
         "correct-credentials",

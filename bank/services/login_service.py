@@ -1,8 +1,6 @@
 from typing import Optional
-
 from bank.models.store import AccountStore
 from bank.models.account import Account
-
 
 def login(
     username: str,

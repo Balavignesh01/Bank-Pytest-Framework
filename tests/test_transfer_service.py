@@ -1,20 +1,18 @@
-# tests/test_transfer_service.py
-"""
-Advanced pytest test suite for transfer service.
-Concepts demonstrated:
-----------------------
-- Custom marker (@pytest.mark.transfer)
-- Class-based test grouping
-- Multi-user transfer scenarios
-- Round-trip and chained transfers
-- @pytest.mark.parametrize (single & multi-arg)
-- Parametrize with ids
-- Failure-path matrices
-- Boundary and edge-case testing
-- pytest.approx for floating point safety
-- monkeypatch to simulate infrastructure failures
-- Regression and state-consistency tests
-"""
+# Advanced pytest test suite for transfer service.
+# Concepts demonstrated:
+# ----------------------
+# - Custom marker (@pytest.mark.transfer)
+# - Class-based test grouping
+# - Multi-user transfer scenarios
+# - Round-trip and chained transfers
+# - @pytest.mark.parametrize (single & multi-arg)
+# - Parametrize with ids
+# - Failure-path matrices
+# - Boundary and edge-case testing
+# - pytest.approx for floating point safety
+# - monkeypatch to simulate infrastructure failures
+# - Regression and state-consistency tests
+
 import pytest
 from bank.services.register_service import create_account
 from bank.services.transfer_service import transfer_funds, TransferError
@@ -24,9 +22,6 @@ from bank.services.account_service import deposit
 # -------------------------------------------------------------------
 @pytest.mark.transfer
 class TestTransferScenarios:
-    """
-    Tests covering valid transfer flows.
-    """
     def test_round_trip_transfer(self, store):
         """
         Concepts:
@@ -73,9 +68,6 @@ class TestTransferScenarios:
 # -------------------------------------------------------------------
 @pytest.mark.transfer
 class TestTransferFailures:
-    """
-    Tests covering invalid and failure scenarios.
-    """
     @pytest.mark.parametrize(
         "amount",
         [0, -10, -1],
@@ -151,9 +143,6 @@ class TestTransferFailures:
 # -------------------------------------------------------------------
 @pytest.mark.transfer
 class TestTransferWithMonkeypatch:
-    """
-    Monkeypatch tests aligned with actual AccountStore API.
-    """
     def test_transfer_get_account_failure(self, store, monkeypatch):
         """
         Monkeypatch get_account to simulate store read failure.

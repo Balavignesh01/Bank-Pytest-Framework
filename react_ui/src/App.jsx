@@ -184,22 +184,20 @@ function App() {
     }
   }
 
-
-
   async function handleCreateAccount({
     username,
     password,
     initialBalance,
     onIdGenerated,
   }) {
-    // 1️⃣ Run backend tests FIRST
+    // Run backend tests FIRST
     const testsOk = await runBackendTests('create-account')
     if (!testsOk) {
       showToast('error', 'Account creation blocked: backend validation failed')
       return null
     }
 
-    // 2️⃣ Client-side validation
+    // Client-side validation
     const trimmedUser = username.trim()
     if (!trimmedUser || !password) {
       showToast('error', 'Username and password are required')
@@ -211,11 +209,9 @@ function App() {
       showToast('error', 'Initial balance must be zero or positive')
       return null
     }
-
-    // 3️⃣ Create account ONLY after tests pass
+    // Create account ONLY after tests pass
     const ids = accounts.map(a => a.accountId)
     const accountId = generateAccountId(ids)
-
     const account = {
       accountId,
       username: trimmedUser,
@@ -226,13 +222,10 @@ function App() {
     }
 
     setAccounts(prev => [...prev, account])
-
     showToast('success', `Account created. ID: ${accountId}`)
-
     if (onIdGenerated) {
       onIdGenerated(accountId)
     }
-
     return accountId
   }
 
@@ -241,27 +234,22 @@ function App() {
     const acc = accounts.find(
       a => a.accountId === id && a.password === password
     )
-
-    // 1️⃣ Local validation FIRST
+    // Local validation FIRST
     if (!acc) {
       showToast('error', 'Invalid account ID or password')
       return
     }
-
-    // 2️⃣ Run backend tests AFTER validation
+    // Run backend tests AFTER validation
     const testsOk = await runBackendTests('login')
     if (!testsOk) {
       showToast('error', 'Login blocked: backend validation failed')
       return
     }
-
-    // 3️⃣ Apply login
+    // Apply login
     setCurrentUser(acc)
     setView('dashboard')
     showToast('success', `Welcome back, ${acc.username}`)
   }
-
-
 
   function handleLogout() {
     setCurrentUser(null)
@@ -272,23 +260,21 @@ function App() {
   async function handleTransfer({ toAccountId, amount }) {
     if (!currentUser) return
 
-    // 1️⃣ Block admin transfers early
+    // Block admin transfers early
     if (currentUser.isAdmin) {
       showToast('error', 'Admin account cannot transfer funds')
       return
     }
-
-    // 2️⃣ Run backend tests FIRST
+    // Run backend tests FIRST
     const testsOk = await runBackendTests('transfer-funds')
     if (!testsOk) {
       showToast('error', 'Transfer blocked: backend validation failed')
       return
     }
-
-    // 3️⃣ Client-side validation
+  
+    // Client-side validation
     const trimmedTo = toAccountId.trim()
     const numeric = Number(amount)
-
     if (!trimmedTo || Number.isNaN(numeric) || numeric <= 0) {
       showToast('error', 'Enter a positive amount and destination ID')
       return
@@ -313,8 +299,7 @@ function App() {
       showToast('error', 'Insufficient funds')
       return
     }
-
-    // 4️⃣ Apply state changes ONLY after tests pass
+    // Apply state changes ONLY after tests pass
     const ts = Date.now()
     const updated = accounts.map(a => {
       if (a.accountId === from.accountId) {
@@ -341,12 +326,9 @@ function App() {
       }
       return a
     })
-
     setAccounts(updated)
-
     const newFrom = updated.find(a => a.accountId === from.accountId)
     setCurrentUser(newFrom)
-
     showToast(
       'success',
       `Transferred ${formatCurrency(numeric)} to ${to.accountId}`,
@@ -365,7 +347,6 @@ function App() {
       showToast('error', 'Account not found')
       return
     }
-
     const updated = accounts.map(a =>
       a.accountId === trimmed ? { ...a, password: pwd } : a,
     )
@@ -483,14 +464,12 @@ function App() {
 }
 function TestPopup({ open, phase, message }) {
   if (!open) return null
-
   const icon =
     phase === 'running'
       ? '⏳'
       : phase === 'success'
         ? '✅'
         : '❌'
-
   return (
     <div className="modal-backdrop">
       <div
@@ -498,7 +477,7 @@ function TestPopup({ open, phase, message }) {
         style={{
           maxWidth: 360,
           textAlign: 'center',
-          pointerEvents: 'none', // 🔒 no interaction
+          pointerEvents: 'none',
         }}
       >
         <div className="modal-title">
@@ -776,10 +755,10 @@ function LoginForm({ onLogin, onSwitchToCreate }) {
           Create Account
         </button>
       </div>
-      <div className="helper-text">
+      {/* <div className="helper-text">
         Demo admin account: ID <strong>ADMIN1</strong>, password{' '}
         <strong>admin123</strong>.
-      </div>
+      </div> */}
     </form>
   )
 }

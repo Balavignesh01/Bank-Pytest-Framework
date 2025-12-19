@@ -1,19 +1,19 @@
-"""
-Advanced pytest test suite for account deposit & withdraw services.
-Concepts demonstrated:
-----------------------
-- Custom markers (@pytest.mark.account)
-- Class-based test grouping
-- Function-level markers
-- @pytest.mark.parametrize (single & multi-arg)
-- Parametrize with ids
-- Exception testing with context managers
-- pytest.approx for floating-point comparisons
-- monkeypatch to simulate edge cases
-- xfail for future business rules
-- Regression-style tests
-- State isolation via fixtures
-"""
+
+# Advanced pytest test suite for account deposit & withdraw services.
+# Concepts demonstrated:
+# ----------------------
+# - Custom markers (@pytest.mark.account)
+# - Class-based test grouping
+# - Function-level markers
+# - @pytest.mark.parametrize (single & multi-arg)
+# - Parametrize with ids
+# - Exception testing with context managers
+# - pytest.approx for floating-point comparisons
+# - monkeypatch to simulate edge cases
+# - xfail for future business rules
+# - Regression-style tests
+# - State isolation via fixtures
+
 import pytest
 from bank.services.register_service import create_account
 from bank.services.account_service import (
@@ -28,7 +28,6 @@ from bank.services.account_service import (
 class TestDeposit:
     """Deposit-related tests."""
     @pytest.mark.parametrize(
-        "amount",
         [10.0, 50.5, 99.99],
         ids=["small", "medium", "decimal"],
     )
@@ -80,7 +79,6 @@ class TestDeposit:
 
 @pytest.mark.account
 class TestWithdraw:
-    """Withdraw-related tests."""
     def test_withdraw_decreases_balance(self, store):
         """
         Concepts:
@@ -152,9 +150,6 @@ class TestWithdraw:
 # -------------------------------------------------------------------
 @pytest.mark.account
 class TestAccountServiceWithMonkeypatch:
-    """
-    Tests demonstrating monkeypatch usage.
-    """
     def test_deposit_internal_store_failure(self, store, monkeypatch):
         """
         Concepts:
@@ -185,11 +180,6 @@ class TestAccountServiceWithMonkeypatch:
 @pytest.mark.account
 @pytest.mark.xfail(reason="Business rule: overdraft support planned but not implemented")
 def test_withdraw_allows_overdraft_future(self, store):
-    """
-    Concepts:
-    - xfail for future feature
-    - Living documentation of business roadmap
-    """
     acc = create_account("future_overdraft", "pw", store)
     deposit(acc.account_id, 10.0, store)
     # Future behavior: allow overdraft

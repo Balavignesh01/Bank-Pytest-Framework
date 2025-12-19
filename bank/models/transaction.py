@@ -4,11 +4,10 @@ import json
 from pathlib import Path
 from typing import List, Optional
 
-
 @dataclass
 class Transaction:
     tx_id: str
-    from_account: Optional[str]      # None for deposits
+    from_account: Optional[str]    
     to_account: Optional[str]
     amount: float
     timestamp: str
@@ -20,7 +19,6 @@ class Transaction:
     @classmethod
     def from_dict(cls, d):
         return cls(**d)
-
 
 class TransactionStore:
     def __init__(self, path: str | None = None):

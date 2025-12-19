@@ -16,8 +16,6 @@ body {
   background: radial-gradient(circle at top left, #4f46e5 0, #2563eb 35%, #0ea5e9 70%, #1d1557 100%);
 }
 
-/* Shell layout */
-
 .app-shell {
   min-height: 100vh;
   display: grid;
@@ -33,7 +31,6 @@ body {
   }
 }
 
-/* Sidebar */
 
 .sidebar {
   background: linear-gradient(180deg, rgba(15,23,42,0.9), rgba(37,99,235,0.95));
@@ -182,7 +179,6 @@ body {
   cursor: pointer;
 }
 
-/* Main content panel */
 
 .main {
   position: relative;
@@ -236,7 +232,6 @@ body {
   font-size: 11px;
 }
 
-/* Account snapshot – always visible */
 
 .snapshot {
   margin-top: 20px;
@@ -272,7 +267,6 @@ body {
   border: 1px solid rgba(16,185,129,0.4);
 }
 
-/* Inner glass card (for forms / content) */
 
 .content-card {
   margin-top: 32px;
@@ -297,7 +291,6 @@ body {
   margin-bottom: 18px;
 }
 
-/* Forms */
 
 .form {
   display: flex;
@@ -380,7 +373,6 @@ body {
   color: #6b7280;
 }
 
-/* Admin table inside card */
 
 .table {
   width: 100%;
@@ -403,7 +395,6 @@ body {
   letter-spacing: 0.08em;
 }
 
-/* Toast */
 
 .toast {
   position: fixed;
@@ -436,8 +427,6 @@ body {
   color: #1e3a8a;
 }
 
-
-/* --- Updated typography & modal styles (v3) --- */
 
 .main-title {
   font-size: 32px;
@@ -481,7 +470,6 @@ body {
   font-size: 14px;
 }
 
-/* Slightly larger form text */
 .label {
   font-size: 14px;
 }
@@ -491,7 +479,6 @@ body {
   padding: 10px 11px;
 }
 
-/* Switch account modal */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -559,8 +546,6 @@ body {
 
 .content-card{max-width:900px !important;min-height:380px;padding:40px;}
 
-
-/* Admin subcards for option B layout */
 .admin-subcard {
   margin-top: 14px;
   padding: 16px 18px;
@@ -569,7 +554,6 @@ body {
   border: 1px solid #e5e7eb;
 }
 
-/* Make content card even larger and more padded on admin/detail screens */
 .content-card {
   max-width: 950px;
   min-height: 420px;
