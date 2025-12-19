@@ -1,0 +1,577 @@
+
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #0f172a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #4f46e5 0, #2563eb 35%, #0ea5e9 70%, #1d1557 100%);
+}
+
+/* Shell layout */
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  padding: 32px;
+  gap: 32px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+}
+
+/* Sidebar */
+
+.sidebar {
+  background: linear-gradient(180deg, rgba(15,23,42,0.9), rgba(37,99,235,0.95));
+  border-radius: 24px;
+  padding: 22px 18px;
+  color: #e5e7eb;
+  box-shadow:
+    0 24px 40px rgba(15, 23, 42, 0.6),
+    0 0 0 1px rgba(15, 23, 42, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #f97316, #ec4899 45%, #6366f1 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  color: white;
+  box-shadow: 0 0 18px rgba(251, 146, 60, 0.8);
+}
+
+.sidebar-title-main {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.sidebar-title-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.sidebar-tagline {
+  font-size: 12px;
+  color: #cbd5f5;
+  opacity: 0.9;
+}
+
+.sidebar-section-label {
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  border-radius: 999px;
+  padding: 9px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.16s ease-out;
+}
+
+.nav-item-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  background: rgba(15,23,42,0.5);
+}
+
+.nav-item-label-main {
+  font-weight: 600;
+}
+
+.nav-item-label-sub {
+  font-size: 11px;
+  color: #cbd5f5;
+}
+
+.nav-item:hover {
+  background: rgba(15,23,42,0.35);
+  border-color: rgba(191,219,254,0.6);
+}
+
+.nav-item.active {
+  background: linear-gradient(90deg, #38bdf8, #6366f1);
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(56,189,248,0.7);
+}
+
+.nav-item.active .nav-item-icon {
+  background: rgba(15,23,42,0.9);
+}
+
+.nav-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: #cbd5f5;
+}
+
+.sidebar-help {
+  margin-top: 6px;
+}
+
+.sidebar-help-btn {
+  width: 100%;
+  border-radius: 999px;
+  padding: 8px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(15,23,42,0.6);
+  color: #e5e7eb;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* Main content panel */
+
+.main {
+  position: relative;
+  border-radius: 32px;
+  padding: 32px 34px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255,255,255,0.45);
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  box-shadow:
+    0 30px 60px rgba(15, 23, 42, 0.55),
+    0 0 0 1px rgba(148, 163, 184, 0.45);
+  color: #0f172a;
+  overflow: hidden;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.main-title {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.main-subtitle {
+  font-size: 13px;
+  color: #4b5563;
+  max-width: 520px;
+}
+
+.main-header-tag {
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(59,130,246,0.09);
+  border: 1px solid rgba(37,99,235,0.4);
+  color: #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-header-tag-pill {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: white;
+  font-size: 11px;
+}
+
+/* Account snapshot – always visible */
+
+.snapshot {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(148,163,184,0.5);
+  font-size: 12px;
+  color: #111827;
+  box-shadow: 0 14px 25px rgba(148,163,184,0.5);
+}
+
+.snapshot-label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.snapshot-id {
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.snapshot-pill {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(16,185,129,0.08);
+  color: #047857;
+  border: 1px solid rgba(16,185,129,0.4);
+}
+
+/* Inner glass card (for forms / content) */
+
+.content-card {
+  margin-top: 32px;
+  max-width: 540px;
+  background: rgba(255,255,255,0.96);
+  border-radius: 26px;
+  padding: 26px 28px 24px;
+  box-shadow:
+    0 26px 40px rgba(148, 163, 184, 0.6),
+    0 0 0 1px rgba(226,232,240,0.9);
+}
+
+.content-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.content-card-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 18px;
+}
+
+/* Forms */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.input {
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  padding: 9px 10px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37,99,235,0.4);
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.button {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
+}
+
+.button.primary {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: white;
+  box-shadow: 0 16px 30px rgba(37,99,235,0.6);
+}
+
+.button.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px rgba(37,99,235,0.7);
+}
+
+.button.ghost {
+  background: white;
+  color: #374151;
+  border-color: #e5e7eb;
+}
+
+.button.ghost:hover {
+  background: #f9fafb;
+}
+
+.helper-text {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* Admin table inside card */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.table th,
+.table td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Toast */
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #111827;
+  box-shadow: 0 16px 30px rgba(15,23,42,0.45);
+  border: 1px solid rgba(15,23,42,0.85);
+  background: white;
+}
+
+.toast.toast-error {
+  background: #fee2e2;
+  border-color: #b91c1c;
+  color: #7f1d1d;
+}
+
+.toast.toast-success {
+  background: #dcfce7;
+  border-color: #15803d;
+  color: #14532d;
+}
+
+.toast.toast-info {
+  background: #dbeafe;
+  border-color: #1d4ed8;
+  color: #1e3a8a;
+}
+
+
+/* --- Updated typography & modal styles (v3) --- */
+
+.main-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.main-subtitle {
+  font-size: 15px;
+  color: rgba(249, 250, 251, 0.88);
+  max-width: 620px;
+}
+
+.main-header-tag {
+  font-size: 12px;
+  padding: 7px 14px;
+}
+
+.snapshot {
+  margin-top: 24px;
+  padding: 12px 18px;
+  font-size: 13px;
+}
+
+.snapshot-label {
+  font-weight: 700;
+  color: #374151;
+}
+
+.content-card {
+  margin-top: 36px;
+  max-width: 640px;
+  padding: 30px 32px 26px;
+}
+
+.content-card-title {
+  font-size: 20px;
+}
+
+.content-card-subtitle {
+  font-size: 14px;
+}
+
+/* Slightly larger form text */
+.label {
+  font-size: 14px;
+}
+
+.input {
+  font-size: 14px;
+  padding: 10px 11px;
+}
+
+/* Switch account modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+}
+
+.modal-panel {
+  width: 380px;
+  max-width: 90vw;
+  background: white;
+  border-radius: 20px;
+  padding: 18px 18px 16px;
+  box-shadow:
+    0 26px 50px rgba(15, 23, 42, 0.7),
+    0 0 0 1px rgba(226,232,240,0.9);
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.modal-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.modal-list {
+  max-height: 220px;
+  overflow: auto;
+  margin-bottom: 12px;
+}
+
+.modal-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px;
+  font-size: 13px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-list-item:last-child {
+  border-bottom: none;
+}
+
+.modal-account-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.content-card{max-width:900px !important;min-height:380px;padding:40px;}
+
+
+/* Admin subcards for option B layout */
+.admin-subcard {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+/* Make content card even larger and more padded on admin/detail screens */
+.content-card {
+  max-width: 950px;
+  min-height: 420px;
+  padding: 40px 44px;
+}

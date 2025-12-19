@@ -1,0 +1,5 @@
+account_id=3
+username=balaa
+pw_hash=ecd475d7ece6d41670995c6e901615e60354fb46ad014db7e3f89f39326f2459
+balance=1000.0
+created=2025-12-01 19:13:36
