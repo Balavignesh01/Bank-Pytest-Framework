@@ -138,10 +138,12 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-  action: actionLabel,
-  accounts: loadAccounts(),
-  session: loadSession(),
-})
+          action: actionLabel,
+          accounts: loadAccounts(),
+          session: loadSession(),
+          transfers: loadAccounts().flatMap(a => a.history || []),
+        })
+
 
       })
 
@@ -276,7 +278,7 @@ function App() {
       showToast('error', 'Transfer blocked: backend validation failed')
       return
     }
-  
+
     // Client-side validation
     const trimmedTo = toAccountId.trim()
     const numeric = Number(amount)

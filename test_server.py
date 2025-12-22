@@ -29,10 +29,13 @@ class TestServer(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             payload = {}
         action = payload.get("action")
+        os.environ["UI_ACTION"] = action or ""
         ui_accounts = payload.get("accounts", [])
         ui_session = payload.get("session")
+        ui_transfers = payload.get("transfers", [])
         os.environ["UI_ACCOUNTS"] = json.dumps(ui_accounts)
         os.environ["UI_SESSION"] = json.dumps(ui_session)
+        os.environ["UI_TRANSFERS"] = json.dumps(ui_transfers)
         print("\n-------------------------------------------")
         print(f"[test_server] Received test trigger from UI: {action}")
         print(f"[test_server] UI accounts received: {len(ui_accounts)}")

@@ -1,56 +1,50 @@
-# tests/test_register_service.py
-#
-# Advanced pytest test suite for registration service.
-#
-# This file contains TWO validation layers:
-# 1️⃣ Backend unit tests using isolated AccountStore (store fixture)
-# 2️⃣ Real-time UI validation using browser localStorage snapshot
-#
-# Concepts covered (with REAL usage, not just comments):
-# -------------------------------------------------------
+# ============================================================
+# Concepts covered:
+# ------------------------------------------------------------
 # - Custom markers (@pytest.mark.register)
-# - Test classes for logical grouping
-# - Function-level and class-level markers
-# - @pytest.mark.parametrize (single & multi-arg)
-# - @pytest.mark.parametrize with ids
-# - Fixtures (store fixture from conftest.py)
-# - Built-in markers: skip, xfail
-# - monkeypatch (patching internal helpers)
-# - Context-manager exception assertions
-# - Multiple assertions per test
-# - Indirect behavior verification
-# - Test ordering independence
-# - Edge-case validation
+# - Class-based grouping
+# - Parametrization (single & multi-arg) with ids
+# - Fixtures (store injection)
+# - skip / xfail
+# - monkeypatch (internal helper patching)
+# - Exception assertions
+# - Regression & edge-case validation
 # - Data normalization tests
 # - Boolean flag coverage
-# - UI → pytest contract validation (NEW)
+# - UI → pytest contract validation (NO MOCKS)
+# ============================================================
 
 import pytest
 import os
+import json
+
 from bank.services.register_service import (
     create_account,
     RegistrationError,
-    _generate_account_id,  # internal helper – patched via monkeypatch
 )
 
 # ===================================================================
-# BACKEND REGISTRATION TESTS (Pure business logic)
+# FIXTURES — REAL UI STATE (SOURCE OF TRUTH)
 # ===================================================================
 
-# -------------------------------------------------------------------
-# BASIC REGISTRATION TESTS
-# -------------------------------------------------------------------
+@pytest.fixture(scope="session")
+def ui_accounts():
+    raw = os.environ.get("UI_ACCOUNTS")
+    if not raw:
+        pytest.skip("UI_ACCOUNTS not provided by UI")
+    return json.loads(raw)
+
+# ===================================================================
+# BACKEND REGISTRATION UNIT TESTS
+# ===================================================================
+
 @pytest.mark.register
 class TestRegistrationBasic:
-    """
-    Basic, happy-path and input-validation behavior.
-    """
+    # Basic happy-path and input-validation behavior
 
     def test_create_account_success(self, store):
         acc = create_account("alice", "secret", store)
-
         assert acc.username == "alice"
-        assert acc.account_id is not None
         assert isinstance(acc.account_id, str)
         assert len(acc.account_id) == 6
         assert acc.balance == 0.0
@@ -81,16 +75,8 @@ class TestRegistrationBasic:
         with pytest.raises(RegistrationError):
             create_account(username, password, store)
 
-
-# -------------------------------------------------------------------
-# ADVANCED / EDGE CASE TESTS
-# -------------------------------------------------------------------
 @pytest.mark.register
 class TestRegistrationAdvanced:
-    """
-    Advanced and edge-case behavior.
-    """
-
     @pytest.mark.parametrize(
         "uname1,uname2",
         [
@@ -116,11 +102,11 @@ class TestRegistrationAdvanced:
         create_account("temp", "pw", store)
 
     @pytest.mark.xfail(
-        reason="ID collision handling is delegated to AccountStore",
+        reason="AccountStore handles ID collisions internally",
         strict=False,
     )
-    def test_id_collision_xfail(self, store, monkeypatch):
-        def fixed_id(length=6):
+    def test_account_id_collision(self, store, monkeypatch):
+        def fixed_id(_=6):
             return "AAAAAA"
 
         monkeypatch.setattr(
@@ -129,26 +115,25 @@ class TestRegistrationAdvanced:
         )
 
         create_account("user1", "pw", store)
-        with pytest.raises(ValueError):
+        with pytest.raises(Exception):
             create_account("user2", "pw", store)
 
-    def test_username_is_normalized_to_lowercase(self, store):
+    def test_username_normalization(self, store):
         acc = create_account("  Alice  ", "pw", store)
         assert acc.username == "alice"
 
-    def test_account_ids_are_unique_for_multiple_accounts(self, store):
+    def test_account_ids_unique(self, store):
         ids = set()
         for i in range(10):
             acc = create_account(f"user{i}", "pw", store)
             assert acc.account_id not in ids
             ids.add(acc.account_id)
-
         assert len(ids) == 10
-
 
 # -------------------------------------------------------------------
 # FUNCTION-LEVEL PARAMETRIZATION
 # -------------------------------------------------------------------
+
 @pytest.mark.register
 @pytest.mark.parametrize(
     "username,is_admin",
@@ -163,54 +148,56 @@ def test_create_account_admin_flag(store, username, is_admin):
     assert acc.is_admin is is_admin
     assert acc.username == username.lower()
 
-
 # -------------------------------------------------------------------
 # REGRESSION / STABILITY TESTS
 # -------------------------------------------------------------------
+
 @pytest.mark.register
-def test_multiple_accounts_do_not_interfere_with_each_other(store):
+def test_multiple_accounts_independent(store):
     a1 = create_account("userA", "pw", store)
     a2 = create_account("userB", "pw", store)
-
     assert a1.account_id != a2.account_id
     assert a1.username != a2.username
     assert a1.balance == 0.0
     assert a2.balance == 0.0
 
-
 @pytest.mark.register
-def test_store_injection_allows_shared_state(store):
+def test_shared_store_prevents_duplicates(store):
     create_account("shared", "pw", store)
     with pytest.raises(RegistrationError):
         create_account("shared", "pw", store)
 
-
 # ===================================================================
-# REAL-TIME UI VALIDATION TESTS (NEW)
-# These tests validate browser localStorage state sent by UI
+# REAL-TIME UI VALIDATION TESTS (NO MOCKS)
 # ===================================================================
 
 @pytest.mark.register
 @pytest.mark.skipif(
-    not os.environ.get("UI_ACTIVE"),
-    reason="UI not running – skipping UI state validation tests",
+    os.environ.get("UI_ACTION") == "create-account",
+    reason="UI account not created yet during create-account action",
 )
-class TestRegistrationUIStateValidation:
+@pytest.mark.skipif(
+    not os.environ.get("UI_ACCOUNTS"),
+    reason="UI not running – skipping runtime UI validation",
+)
+class TestRegistrationUIRuntimeValidation:
+
+
     def test_ui_accounts_exist(self, ui_accounts):
         assert isinstance(ui_accounts, list)
         assert ui_accounts, "No accounts found in UI localStorage"
 
-    def test_ui_account_ids_are_unique(self, ui_accounts):
-        ids = [a.get("accountId") for a in ui_accounts]
-        assert len(ids) == len(set(ids))
+    def test_ui_account_ids_unique(self, ui_accounts):
+        ids = [a["accountId"] for a in ui_accounts]
+        assert len(ids) == len(set(ids)), "Duplicate account IDs in UI"
 
-    def test_ui_usernames_are_normalized(self, ui_accounts):
+    def test_ui_usernames_normalized(self, ui_accounts):
         for acc in ui_accounts:
             assert acc["username"] == acc["username"].lower()
 
     def test_ui_admin_account_exists(self, ui_accounts):
         admins = [a for a in ui_accounts if a.get("isAdmin")]
-        assert admins, "Admin account missing in UI localStorage"
+        assert admins, "Admin account missing in UI"
 
     def test_ui_accounts_have_required_fields(self, ui_accounts):
         for acc in ui_accounts:

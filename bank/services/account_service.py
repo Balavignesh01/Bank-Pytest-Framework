@@ -7,9 +7,6 @@ def deposit(
     amount: float,
     store: Optional[AccountStore] = None
 ) -> float:
-    """
-    Deposit funds into an account using Account ID.
-    """
     if store is None:
         store = AccountStore()
     account_id = (account_id or "").strip().upper()
@@ -28,9 +25,6 @@ def withdraw(
     amount: float,
     store: Optional[AccountStore] = None
 ) -> float:
-    """
-    Withdraw funds from an account using Account ID.
-    """
     if store is None:
         store = AccountStore()
     account_id = (account_id or "").strip().upper()

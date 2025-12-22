@@ -8,9 +8,7 @@ def transfer_funds(
     amount: float,
     store: Optional[AccountStore] = None,
 ) -> None:
-    """
-    Transfer funds from one account to another using Account IDs.
-    """
+
     if store is None:
         store = AccountStore()
     # Normalize inputs

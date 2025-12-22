@@ -1,38 +1,54 @@
-# tests/test_login_service.py
 # ============================================================
-# Advanced pytest test suite for LOGIN service (Account ID based)
-#
-# This file contains TWO layers of validation:
-# 1️⃣ Backend authentication tests using isolated AccountStore
-# 2️⃣ Security, regression, and resilience tests (no UI dependency)
-#
-# Login is validated strictly using:
-# - Account ID
-# - Plain-text password (hashed internally)
-#
 # Concepts demonstrated:
 # ------------------------------------------------------------
 # - Custom markers (@pytest.mark.login)
-# - Fixture-based test data setup
+# - Fixture-based data setup
 # - Dependency injection (store fixture)
-# - Account-ID based authentication validation
-# - Case normalization & input sanitization
-# - @
+# - Parametrization
+# - Negative & security scenarios
+# - monkeypatch for resilience testing
+# - Runtime UI contract validation (NO mocks)
+# ============================================================
+
 import pytest
+import os
+import json
+
 from bank.services.register_service import create_account
 from bank.services.login_service import login
-# -------------------------------------------------------------------
-# FIXTURES
-# -------------------------------------------------------------------
+
+# ===================================================================
+# FIXTURES — BACKEND UNIT TEST DATA
+# ===================================================================
 @pytest.fixture
 def registered_user(store):
     return create_account("login_user", "password123", store)
+
 @pytest.fixture
 def another_user(store):
     return create_account("other_user", "otherpass", store)
-# -------------------------------------------------------------------
-# BASIC LOGIN TESTS (ACCOUNT ID BASED)
-# -------------------------------------------------------------------
+
+# ===================================================================
+# FIXTURES — REAL UI STATE (SOURCE OF TRUTH)
+# ===================================================================
+
+@pytest.fixture(scope="session")
+def ui_accounts():
+    raw = os.environ.get("UI_ACCOUNTS")
+    if not raw:
+        pytest.skip("UI_ACCOUNTS not provided by UI")
+    return json.loads(raw)
+
+@pytest.fixture(scope="session")
+def ui_session():
+    raw = os.environ.get("UI_SESSION")
+    if not raw:
+        pytest.skip("UI_SESSION not provided by UI")
+    return json.loads(raw)
+
+# ===================================================================
+# BACKEND UNIT TESTS (NO UI DEPENDENCY)
+# ===================================================================
 
 @pytest.mark.login
 def test_login_success(store, registered_user):
@@ -46,9 +62,11 @@ def test_login_account_id_case_insensitive(store):
     logged_in = login(acc.account_id.lower(), "pw", store)
     assert logged_in is not None
     assert logged_in.account_id == acc.account_id
+
 # -------------------------------------------------------------------
 # PASSWORD COMBINATIONS
-# ------------------------------------------------------------------
+# -------------------------------------------------------------------
+
 @pytest.mark.login
 @pytest.mark.parametrize(
     "password,expected_ok",
@@ -56,6 +74,7 @@ def test_login_account_id_case_insensitive(store):
         ("password123", True),
         ("wrong", False),
     ],
+    ids=["correct-password", "wrong-password"],
 )
 def test_login_password_combinations(store, password, expected_ok):
     acc = create_account("login_user", "password123", store)
@@ -63,7 +82,7 @@ def test_login_password_combinations(store, password, expected_ok):
     assert (result is not None) is expected_ok
 
 # -------------------------------------------------------------------
-# INVALID INPUTS
+# INVALID INPUTS (SECURITY HARDENING)
 # -------------------------------------------------------------------
 
 @pytest.mark.login
@@ -75,6 +94,13 @@ def test_login_password_combinations(store, password, expected_ok):
         (None, "password123"),
         ("ABC123", ""),
         ("ABC123", None),
+    ],
+    ids=[
+        "empty-id",
+        "blank-id",
+        "null-id",
+        "empty-password",
+        "null-password",
     ],
 )
 def test_login_invalid_inputs(store, account_id, password):
@@ -89,20 +115,22 @@ def test_login_invalid_inputs(store, account_id, password):
 def test_login_with_multiple_users(store, registered_user, another_user):
     user1 = login(registered_user.account_id, "password123", store)
     user2 = login(another_user.account_id, "otherpass", store)
-
+    assert user1 is not None
+    assert user2 is not None
     assert user1.account_id != user2.account_id
 
 @pytest.mark.login
 def test_login_wrong_password(store, registered_user):
     result = login(registered_user.account_id, "wrong", store)
     assert result is None
-
 # -------------------------------------------------------------------
-# MONKEYPATCH TESTS (UPDATED FOR get_by_id)
+# MONKEYPATCH — RESILIENCE & FAILURE MODES
 # -------------------------------------------------------------------
 
 @pytest.mark.login
 class TestLoginWithMonkeypatch:
+    """Simulate backend lookup failures."""
+
     def test_login_store_lookup_failure(self, store, monkeypatch):
         def broken_get_by_id(*args, **kwargs):
             raise RuntimeError("Database unavailable")
@@ -113,3 +141,38 @@ class TestLoginWithMonkeypatch:
         monkeypatch.setattr(store, "get_by_id", lambda *_: None)
         result = login("ANYID", "password123", store)
         assert result is None
+
+# ===================================================================
+# REAL-TIME UI LOGIN VALIDATION (NO MOCKS, NO HARDCODED VALUES)
+# ===================================================================
+
+@pytest.mark.login
+@pytest.mark.skipif(
+    os.environ.get("UI_ACTION") == "login",
+    reason="UI session not established yet during login",
+)
+@pytest.mark.skipif(
+    not os.environ.get("UI_ACCOUNTS"),
+    reason="UI not running – skipping runtime UI login validation",
+)
+class TestLoginUIRuntimeValidation:
+    def test_ui_session_exists(self, ui_session):
+        assert ui_session, "UI session missing"
+
+    def test_ui_session_account_exists_in_ui_accounts(
+        self, ui_accounts, ui_session
+    ):
+        ids = [a["accountId"] for a in ui_accounts]
+        assert (
+            ui_session["accountId"] in ids
+        ), "Logged-in user not found in UI accounts"
+
+    @pytest.mark.login
+    def test_ui_logged_in_user_exists(ui_accounts, ui_session):
+        ids = [a["accountId"] for a in ui_accounts]
+        assert ui_session["accountId"] in ids
+
+
+    def test_ui_login_state_consistency(self, ui_session):
+        assert ui_session.get("accountId")
+        assert ui_session.get("username") is not None
