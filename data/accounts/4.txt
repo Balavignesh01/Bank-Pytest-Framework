@@ -1,5 +1,0 @@
-account_id=4
-username=ram
-pw_hash=f4af09e58229dcf5fbfa0ca61dd6faf81221b1e85193d0c65d4ae0f61605585a
-balance=878.0
-created=2025-12-01 22:09:27

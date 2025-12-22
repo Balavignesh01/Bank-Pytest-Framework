@@ -4,7 +4,7 @@ from typing import Optional
 from bank.models.account import Account
 from bank.models.store import AccountStore
 class RegistrationError(Exception):
-# Raised when we cannot create an account
+    pass
 def _generate_account_id(length: int = 6) -> str:
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choices(chars, k=length))
@@ -14,17 +14,24 @@ def create_account(
     store: Optional[AccountStore] = None,
     is_admin: bool = False,
 ) -> Account:
-    # Main account creation API used by tests
     if store is None:
         store = AccountStore()
+    # Normalize inputs
     username = (username or "").strip()
     password = (password or "").strip()
     if not username or not password:
         raise RegistrationError("Username and password are required")
     normalized_username = username.lower()
+    # Username uniqueness check
     if store.get_by_user(normalized_username):
         raise RegistrationError("Username already exists")
-    account_id = _generate_account_id()
+    # Generate unique Account ID (collision-safe)
+    for _ in range(10):
+        account_id = _generate_account_id()
+        if not store.get_by_id(account_id):
+            break
+    else:
+        raise RegistrationError("Failed to generate unique Account ID")
     acct = Account.from_plain_password(
         account_id=account_id,
         username=normalized_username,

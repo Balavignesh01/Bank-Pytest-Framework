@@ -1,5 +1,0 @@
-account_id=h67e5zz
-username=Mohan
-pw_hash=b8f067f3af4cd1674f5949b81a4eeca88bfa433da391ffcea203b1270d619c80
-balance=1000.0
-created=2025-12-01 23:11:38

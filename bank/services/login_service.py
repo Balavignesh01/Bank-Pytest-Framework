@@ -1,22 +1,21 @@
 from typing import Optional
 from bank.models.store import AccountStore
 from bank.models.account import Account
-
 def login(
-    username: str,
+    account_id: str,
     password: str,
     store: Optional[AccountStore] = None
 ) -> Optional[Account]:
     if store is None:
         store = AccountStore()
-    username = (username or "").strip().lower()
+    # Normalize inputs
+    account_id = (account_id or "").strip().upper()
     password = (password or "").strip()
-
-    if not username or not password:
+    if not account_id or not password:
         return None
-
-    acct = store.get_by_user(username)
+    # Fetch account by ID (NOT username)
+    acct = store.get_by_id(account_id)
     if not acct:
         return None
-
+    # Password validation
     return acct if acct.check_password(password) else None

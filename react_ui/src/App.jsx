@@ -137,7 +137,12 @@ function App() {
       const res = await fetch("http://127.0.0.1:5001/api/run-tests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: actionLabel }),
+        body: JSON.stringify({
+  action: actionLabel,
+  accounts: loadAccounts(),
+  session: loadSession(),
+})
+
       })
 
       const data = await res.json()
@@ -197,7 +202,7 @@ function App() {
       return null
     }
 
-    // Client-side validation
+    // UI-side validation
     const trimmedUser = username.trim()
     if (!trimmedUser || !password) {
       showToast('error', 'Username and password are required')

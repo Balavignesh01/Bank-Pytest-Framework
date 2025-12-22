@@ -1,7 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import os
 from urllib.parse import urlparse
 from run_tests import run_pytest
+
 HOST = "127.0.0.1"
 PORT = 5001
 class TestServer(BaseHTTPRequestHandler):
@@ -27,14 +29,20 @@ class TestServer(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             payload = {}
         action = payload.get("action")
+        ui_accounts = payload.get("accounts", [])
+        ui_session = payload.get("session")
+        os.environ["UI_ACCOUNTS"] = json.dumps(ui_accounts)
+        os.environ["UI_SESSION"] = json.dumps(ui_session)
         print("\n-------------------------------------------")
         print(f"[test_server] Received test trigger from UI: {action}")
+        print(f"[test_server] UI accounts received: {len(ui_accounts)}")
         print("[test_server] Running pytest...")
         print("-------------------------------------------")
         result = run_pytest(action)
         print("\n[test_server] Completed tests for:", action)
         print("[test_server] Success:", result.get("success"))
         print("-------------------------------------------\n")
+
         self._set_headers(200)
         self.wfile.write(json.dumps(result).encode("utf-8"))
 def main():
@@ -47,6 +55,5 @@ def main():
         print("\n[test_server] Shutting down...")
     finally:
         server.server_close()
-
 if __name__ == "__main__":
     main()

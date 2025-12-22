@@ -53,7 +53,6 @@ with an interactive UI
 │   │   ├── register_service.py
 │   │   └── transfer_service.py
 │   └── __init__.py
-│── data/
 │── react_ui
 │   ├── node_modules/
 │   ├── src
