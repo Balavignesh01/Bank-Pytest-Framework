@@ -26,7 +26,7 @@ from bank.services.account_service import (
 )
 
 # ===================================================================
-# FIXTURES — REAL UI STATE (SOURCE OF TRUTH)
+# FIXTURES — REAL UI STATE 
 # ===================================================================
 
 @pytest.fixture(scope="session")
@@ -44,7 +44,7 @@ def ui_session():
     return json.loads(raw)
 
 # ===================================================================
-# BACKEND UNIT TESTS (NO UI DEPENDENCY)
+# BACKEND UNIT TESTS 
 # ===================================================================
 
 @pytest.mark.account
@@ -163,7 +163,7 @@ def test_withdraw_overdraft_future(store):
     withdraw(acc.account_id, 20.0, store)
 
 # ===================================================================
-# REAL-TIME UI VALIDATION TESTS (NO MOCKS)
+# REAL-TIME UI VALIDATION TESTS
 # ===================================================================
 
 @pytest.mark.account

@@ -1,21 +1,4 @@
 import React, { useState, useEffect } from 'react'
-
-// async function runBackendTests(actionLabel) {
-//   try {
-//     const res = await fetch("http://127.0.0.1:5001/api/run-tests", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ action: actionLabel }),
-//     })
-
-//     const data = await res.json()
-//     return data.success === true
-//   } catch (err) {
-//     console.warn("Test backend not reachable:", err)
-//     return false
-//   }
-// }
-
 const STORAGE_KEY = 'bcf_accounts_v1'
 const SESSION_KEY = 'bcf_session_v1'
 function loadAccounts() {

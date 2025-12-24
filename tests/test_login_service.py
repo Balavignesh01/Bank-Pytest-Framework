@@ -29,7 +29,7 @@ def another_user(store):
     return create_account("other_user", "otherpass", store)
 
 # ===================================================================
-# FIXTURES — REAL UI STATE (SOURCE OF TRUTH)
+# FIXTURES — REAL UI STATE 
 # ===================================================================
 
 @pytest.fixture(scope="session")
@@ -47,7 +47,7 @@ def ui_session():
     return json.loads(raw)
 
 # ===================================================================
-# BACKEND UNIT TESTS (NO UI DEPENDENCY)
+# BACKEND UNIT TESTS 
 # ===================================================================
 
 @pytest.mark.login

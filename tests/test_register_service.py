@@ -168,7 +168,7 @@ def test_shared_store_prevents_duplicates(store):
         create_account("shared", "pw", store)
 
 # ===================================================================
-# REAL-TIME UI VALIDATION TESTS (NO MOCKS)
+# REAL-TIME UI VALIDATION TESTS
 # ===================================================================
 
 @pytest.mark.register
@@ -181,7 +181,6 @@ def test_shared_store_prevents_duplicates(store):
     reason="UI not running – skipping runtime UI validation",
 )
 class TestRegistrationUIRuntimeValidation:
-
 
     def test_ui_accounts_exist(self, ui_accounts):
         assert isinstance(ui_accounts, list)
