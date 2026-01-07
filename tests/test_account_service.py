@@ -3,16 +3,14 @@
 # Concepts covered:
 # - Custom markers (@pytest.mark.account)
 # - Class-based grouping
-# - Function-level markers
+# - Function level markers
 # - Parametrization (single & multi-arg)
 # - Parametrize with ids
 # - Exception testing (pytest.raises)
 # - pytest.approx for float safety
 # - monkeypatch for fault injection
 # - xfail for future rules
-# - Regression testing
-# - Fixture-based state isolation
-# - REAL-TIME UI DATA validation (no mocks, no hardcoded values)
+# - REAL-TIME UI DATA validation
 # ===================================================================
 import pytest
 import os
@@ -117,6 +115,7 @@ class TestWithdrawUnit:
             deposit(acc.account_id, start_balance, store)
         with pytest.raises(AccountUpdateError):
             withdraw(acc.account_id, withdraw_amount, store)
+            
     def test_withdraw_exact_balance_leaves_zero(self, store):
         acc = create_account("wd_exact", "pw", store)
         deposit(acc.account_id, 75.0, store)
@@ -169,8 +168,9 @@ def test_withdraw_overdraft_future(store):
 @pytest.mark.account
 @pytest.mark.skipif(
     not os.environ.get("UI_ACCOUNTS"),
-    reason="UI not running – skipping runtime UI validation",
+    reason="UI not running - skipping runtime UI validation",
 )
+
 class TestAccountUIRuntimeValidation:
 
     def test_ui_accounts_exist(self, ui_accounts):

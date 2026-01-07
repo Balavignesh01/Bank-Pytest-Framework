@@ -28,7 +28,7 @@ class TestServer(BaseHTTPRequestHandler):
             payload = json.loads(raw_body.decode("utf-8") or "{}")
         except json.JSONDecodeError:
             payload = {}
-        action = payload.get("action")
+        action = payload.get("action") 
         os.environ["UI_ACTION"] = action or ""
         ui_accounts = payload.get("accounts", [])
         ui_session = payload.get("session")

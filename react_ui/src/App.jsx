@@ -181,13 +181,7 @@ function App() {
     onIdGenerated,
   }) {
     // Run backend tests FIRST
-    const testsOk = await runBackendTests('create-account')
-    if (!testsOk) {
-      showToast('error', 'Account creation blocked: backend validation failed')
-      return null
-    }
-
-    // UI-side validation
+    // UI-side validation FIRST (no backend call)
     const trimmedUser = username.trim()
     if (!trimmedUser || !password) {
       showToast('error', 'Username and password are required')
@@ -197,6 +191,12 @@ function App() {
     const startingBalance = Number(initialBalance || 0)
     if (Number.isNaN(startingBalance) || startingBalance < 0) {
       showToast('error', 'Initial balance must be zero or positive')
+      return null
+    }
+    // Run backend tests ONLY after validation passes
+    const testsOk = await runBackendTests('create-account')
+    if (!testsOk) {
+      showToast('error', 'Account creation blocked: backend validation failed')
       return null
     }
     // Create account ONLY after tests pass
@@ -210,7 +210,6 @@ function App() {
       isAdmin: false,
       history: [],
     }
-
     setAccounts(prev => [...prev, account])
     showToast('success', `Account created. ID: ${accountId}`)
     if (onIdGenerated) {
@@ -255,16 +254,10 @@ function App() {
       showToast('error', 'Admin account cannot transfer funds')
       return
     }
-    // Run backend tests FIRST
-    const testsOk = await runBackendTests('transfer-funds')
-    if (!testsOk) {
-      showToast('error', 'Transfer blocked: backend validation failed')
-      return
-    }
-
-    // Client-side validation
+    // Client-side validation FIRST (no backend tests)
     const trimmedTo = toAccountId.trim()
     const numeric = Number(amount)
+
     if (!trimmedTo || Number.isNaN(numeric) || numeric <= 0) {
       showToast('error', 'Enter a positive amount and destination ID')
       return
@@ -289,6 +282,14 @@ function App() {
       showToast('error', 'Insufficient funds')
       return
     }
+
+    // Run backend tests ONLY after all validations pass
+    const testsOk = await runBackendTests('transfer-funds')
+    if (!testsOk) {
+      showToast('error', 'Transfer blocked: backend validation failed')
+      return
+    }
+
     // Apply state changes ONLY after tests pass
     const ts = Date.now()
     const updated = accounts.map(a => {

@@ -24,7 +24,7 @@ from bank.services.register_service import (
 )
 
 # ===================================================================
-# FIXTURES — REAL UI STATE (SOURCE OF TRUTH)
+# FIXTURES — REAL UI STATE 
 # ===================================================================
 
 @pytest.fixture(scope="session")
@@ -101,22 +101,23 @@ class TestRegistrationAdvanced:
     def test_registration_triggers_welcome_email(self, store):
         create_account("temp", "pw", store)
 
-    @pytest.mark.xfail(
-        reason="AccountStore handles ID collisions internally",
-        strict=False,
-    )
+# -------------------------------------------------------------------
+# MONKEY PATCH 
+# -------------------------------------------------------------------
     def test_account_id_collision(self, store, monkeypatch):
         def fixed_id(_=6):
             return "AAAAAA"
-
         monkeypatch.setattr(
             "bank.services.register_service._generate_account_id",
             fixed_id,
         )
-
         create_account("user1", "pw", store)
         with pytest.raises(Exception):
             create_account("user2", "pw", store)
+
+# -------------------------------------------------------------------
+# BACKEND LOGIC - NORMALIZATION AND UNIQUE CHECK
+# -------------------------------------------------------------------
 
     def test_username_normalization(self, store):
         acc = create_account("  Alice  ", "pw", store)

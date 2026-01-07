@@ -98,7 +98,7 @@ class TestTransferFailures:
         a = create_account("iA", "pw", store)
         b = create_account("iB", "pw", store)
 
-        deposit(a.account_id, 50, store)
+        deposit(a.account_id, 50, store)        
 
         with pytest.raises(TransferError):
             transfer_funds(a.account_id, b.account_id, amount, store)

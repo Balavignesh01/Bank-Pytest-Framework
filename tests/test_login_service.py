@@ -7,7 +7,7 @@
 # - Parametrization
 # - Negative & security scenarios
 # - monkeypatch for resilience testing
-# - Runtime UI contract validation (NO mocks)
+# - Runtime UI contract validation
 # ============================================================
 
 import pytest
@@ -143,7 +143,7 @@ class TestLoginWithMonkeypatch:
         assert result is None
 
 # ===================================================================
-# REAL-TIME UI LOGIN VALIDATION (NO MOCKS, NO HARDCODED VALUES)
+# REAL-TIME UI LOGIN VALIDATION 
 # ===================================================================
 
 @pytest.mark.login
@@ -156,6 +156,7 @@ class TestLoginWithMonkeypatch:
     reason="UI not running – skipping runtime UI login validation",
 )
 class TestLoginUIRuntimeValidation:
+    
     def test_ui_session_exists(self, ui_session):
         assert ui_session, "UI session missing"
 
@@ -171,7 +172,6 @@ class TestLoginUIRuntimeValidation:
     def test_ui_logged_in_user_exists(ui_accounts, ui_session):
         ids = [a["accountId"] for a in ui_accounts]
         assert ui_session["accountId"] in ids
-
 
     def test_ui_login_state_consistency(self, ui_session):
         assert ui_session.get("accountId")
