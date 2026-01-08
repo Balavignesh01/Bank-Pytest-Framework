@@ -403,6 +403,34 @@ function App() {
   }
 
   const canSwitch = accounts.length > 1
+function InfoPanel() {
+  return (
+    <aside className="info-panel">
+      <div className="info-panel-title">How MIT Bank Works</div>
+
+      <ul className="info-list">
+        <li>
+          <strong>Account ID</strong> is a unique 6-character code generated when
+          you create an account.
+        </li>
+        <li>
+          Use <strong>Account ID + Password</strong> to log in from any screen.
+        </li>
+        <li>
+          <strong>Transfers</strong> move money instantly between accounts in
+          this browser.
+        </li>
+        <li>
+          <strong>Admin</strong> users can add funds and reset passwords.
+        </li>
+      </ul>
+
+      <div className="info-note">
+        This is a demo application. Data is stored locally in your browser.
+      </div>
+    </aside>
+  )
+}
 
   return (
     <div className="app-shell">
@@ -419,18 +447,23 @@ function App() {
           canSwitch={canSwitch}
           onOpenSwitch={openSwitchModal}
         />
-        <ContentArea
-          view={view}
-          setView={setView}
-          currentUser={currentUser}
-          accounts={accounts}
-          onCreateAccount={handleCreateAccount}
-          onLogin={handleLogin}
-          onTransfer={handleTransfer}
-          onAdminPasswordChange={handleAdminPasswordChange}
-          onAdminAddFunds={handleAdminAddFunds}
-          showToast={showToast}
-        />
+<div className="content-layout">
+  <ContentArea
+    view={view}
+    setView={setView}
+    currentUser={currentUser}
+    accounts={accounts}
+    onCreateAccount={handleCreateAccount}
+    onLogin={handleLogin}
+    onTransfer={handleTransfer}
+    onAdminPasswordChange={handleAdminPasswordChange}
+    onAdminAddFunds={handleAdminAddFunds}
+    showToast={showToast}
+  />
+
+  <InfoPanel />
+</div>
+
         {toast && <Toast kind={toast.kind} message={toast.message} />}
         {showSwitchModal && (
           <AccountSwitchModal
