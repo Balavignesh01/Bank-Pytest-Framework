@@ -5,13 +5,13 @@
 # - Class-based grouping
 # - Parametrization (single & multi-arg) with ids
 # - Fixtures (store injection)
-# - skip / xfail
+# - skip
 # - monkeypatch (internal helper patching)
 # - Exception assertions
 # - Regression & edge-case validation
 # - Data normalization tests
 # - Boolean flag coverage
-# - UI → pytest contract validation (NO MOCKS)
+# - UI → pytest contract validation
 # ============================================================
 
 import pytest
@@ -179,7 +179,7 @@ def test_shared_store_prevents_duplicates(store):
 )
 @pytest.mark.skipif(
     not os.environ.get("UI_ACCOUNTS"),
-    reason="UI not running – skipping runtime UI validation",
+    reason="UI not running - skipping runtime UI validation",
 )
 class TestRegistrationUIRuntimeValidation:
 

@@ -603,7 +603,7 @@ function Header() {
       <div>
         <div className="main-title">Welcome to MIT Bank</div>
         <div className="main-subtitle">
-          A simple glassmorphic UI where a single Account ID and password drive login,
+          A glassmorphic UI where multiple Account ID and password drive login,
           account view, transfers, and admin actions.
         </div>
       </div>

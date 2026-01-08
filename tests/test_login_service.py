@@ -153,7 +153,7 @@ class TestLoginWithMonkeypatch:
 )
 @pytest.mark.skipif(
     not os.environ.get("UI_ACCOUNTS"),
-    reason="UI not running – skipping runtime UI login validation",
+    reason="UI not running - skipping runtime UI login validation",
 )
 class TestLoginUIRuntimeValidation:
     

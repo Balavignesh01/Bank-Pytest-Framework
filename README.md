@@ -3,15 +3,6 @@
 This project is a demo banking application focused on Pytest based testing framework
 with an interactive UI
 
-## Features
-
-### Domain
-- Create account (username + password) → generates **account ID**
-- Login using **account ID + password**
-- Edit account details with admin actions (username, password)
-- Transfer funds between accounts
-- JSON-based storage for simplicity (file-based)
-
 ### UI
 - Modern light theme 
 - Screens:

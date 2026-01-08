@@ -28,7 +28,7 @@ def create_account(
     # Generate unique Account ID (collision-safe)
     for _ in range(10):
         account_id = _generate_account_id()
-        if not store.get_by_id(account_id):
+        if not store.get_by_id(account_id): # if not none == true
             break
     else:
         raise RegistrationError("Failed to generate unique Account ID")
