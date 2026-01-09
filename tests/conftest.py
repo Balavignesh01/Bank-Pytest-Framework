@@ -1,8 +1,3 @@
-# tests/conftest.py
-# - Isolated JSON-backed store per test
-# - Teardown validation (JSON integrity check)
-# - UI state fixtures injected via test_server (localStorage bridge)
-# - Yield fixtures for setup/teardown control
 import json
 import os
 from pathlib import Path
@@ -19,11 +14,10 @@ def store(tmp_path, monkeypatch):
     yield st  
     if db_file.exists():
         with open(db_file, "r", encoding="utf-8") as f:
-            json.load(f) # converts the json into python object 
+            json.load(f) 
 
 # -------------------------------------------------------------------
 # UI STATE FIXTURES (Injected from React localStorage)
-# Source: test_server.py → ENV variables
 # -------------------------------------------------------------------
 @pytest.fixture
 def ui_accounts():

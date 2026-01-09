@@ -109,7 +109,7 @@ function App() {
     setToast({ kind, message })
     setTimeout(() => setToast(null), 2600)
   }
-  async function runBackendTests(actionLabel) {
+  async function runBackendTests(actionLabel) { 
     setTestPopup({
       open: true,
       phase: 'running',
@@ -426,7 +426,7 @@ function InfoPanel() {
       </ul>
 
       <div className="info-note">
-        This is a demo application. Data is stored locally in your browser.
+        This is a demo application. Data is stored locally in browser.
       </div>
     </aside>
   )

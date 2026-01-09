@@ -55,7 +55,7 @@ class TestDepositUnit:
     )
     def test_deposit_increases_balance(self, store, amount):
         acc = create_account("dep_user", "pw", store)
-        new_balance = deposit(acc.account_id, amount, store)
+        new_balance = deposit(acc.account_id, amount, store) 
         assert new_balance == pytest.approx(amount)
 
     @pytest.mark.parametrize(

@@ -1,6 +1,6 @@
 # MIT Bank - Advanced Pytest + UI
 
-This project is a demo banking application focused on Pytest based testing framework
+This is a demo banking application focused on Pytest based testing framework
 with an interactive UI
 
 ### UI
@@ -10,18 +10,15 @@ with an interactive UI
   - Create Account
   - Account Details
   - Transfer Funds
-  - Admnin
+  - Admin
   - Logout(same for all sessions)
-- Smooth navigation between screens
 
-### Pytest (Advanced Level)
+### Advanced Pytest 
 - Layered fixtures using `tmp_path`
-- Separated service layer for easier testing
 - Parametrized tests
 - Custom exceptions and negative tests
 - Monkeypatch-based failure simulation
-- Integration (end-to-end) tests tying together:
-  - register → login → edit(admin) → transfer
+- Integration (end-to-end) tests 
 
 ## Project Layout
 

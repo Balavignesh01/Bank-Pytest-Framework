@@ -58,7 +58,7 @@ class TestTransferScenarios:
         a = create_account("a1", "pw", store)
         b = create_account("a2", "pw", store)
         deposit(a.account_id, 200, store)
-        transfer_funds(a.account_id, b.account_id, 60, store)
+        transfer_funds(a.account_id, b.account_id, 60, store) #a=165 b=35
         transfer_funds(b.account_id, a.account_id, 25, store)
         assert store.get_by_id(a.account_id).balance == pytest.approx(165)
         assert store.get_by_id(b.account_id).balance == pytest.approx(35)

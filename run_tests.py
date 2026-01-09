@@ -14,8 +14,8 @@ def build_pytest_command(action: Optional[str]) -> list[str]:
     cmd = ["pytest", "-q"]
     marker = ACTION_TO_MARKER.get(action)
     if marker:
-        cmd.extend(["-m", marker])
-    return cmd
+        cmd.extend(["-m", marker]) 
+    return cmd # pytest -q -m register
 def run_pytest(action: str | None = None) -> dict:
     env = os.environ.copy()
     existing = env.get("PYTHONPATH", "")

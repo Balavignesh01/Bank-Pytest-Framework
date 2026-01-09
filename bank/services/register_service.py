@@ -8,7 +8,7 @@ class RegistrationError(Exception):
 def _generate_account_id(length: int = 6) -> str:
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choices(chars, k=length))
-def create_account(
+def create_account(  # " alice " , secret , store
     username: str,
     password: str,
     store: Optional[AccountStore] = None,
@@ -17,7 +17,7 @@ def create_account(
     if store is None:
         store = AccountStore()
     # Normalize inputs
-    username = (username or "").strip()
+    username = (username or "").strip() #alice
     password = (password or "").strip()
     if not username or not password:
         raise RegistrationError("Username and password are required")
@@ -28,7 +28,7 @@ def create_account(
     # Generate unique Account ID (collision-safe)
     for _ in range(10):
         account_id = _generate_account_id()
-        if not store.get_by_id(account_id): # if not none == true
+        if not store.get_by_id(account_id): # if not none
             break
     else:
         raise RegistrationError("Failed to generate unique Account ID")
